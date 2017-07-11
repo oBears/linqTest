@@ -7,28 +7,17 @@ using System.Text;
 
 namespace LinqExpressionTest.LinqProvider
 {
-    public class SqlQueryable<T> : IOrderedQueryable<T>
+    public class SqlQueryable<T> : IQueryable<T> where T : class
     {
-        public SqlQueryable(IQueryProvider baseProvider)
+        public SqlBuilder SqlBuilder { get; set; }
+        public IQueryable<T> Select(Expression<Func<T, object>> expression)
         {
-            Provider = baseProvider;
-            Expression = Expression.Constant(this);
+            //new SqlTranslator().Translate(expression);
+            throw new NotImplementedException();
         }
-        public SqlQueryable(IQueryProvider baseProvider, Expression expression)
+        public IQueryable<T> Where(Expression<Func<T, bool>> expression)
         {
-            Provider = baseProvider;
-            Expression = expression;
+            throw new NotImplementedException();
         }
-        public IEnumerator<T> GetEnumerator()
-        {
-            return ((IEnumerable<T>)Provider.Execute(Expression)).GetEnumerator();
-        }
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-        public Type ElementType => typeof(T);
-        public Expression Expression { get; }
-        public IQueryProvider Provider { get; }
     }
 }

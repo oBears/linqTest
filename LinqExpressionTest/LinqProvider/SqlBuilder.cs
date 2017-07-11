@@ -1,29 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace LinqExpressionTest.LinqProvider
 {
     public class SqlBuilder
     {
-        private readonly StringBuilder _builder;
+        private string SqlTemplate => "SELECT {0} FROM {1}{2} ";
+        private  List<string> WhereInfos { get; }
+        private List<string> SelectInfos { get; }
+        private  string WhereSql => string.Join(" ",WhereInfos);
+        private string SelectSql => string.Join(",", SelectInfos);
+        public string TableName { set; get; }
+
         public SqlBuilder()
         {
-            _builder=new StringBuilder();
+            WhereInfos=new List<string>();
+            SelectInfos=new List<string>();
         }
-        public string TableName { set; get; }
-        /// <summary>
-        /// 表别名
-        /// </summary>
-        public string TableAlias { set; get; }
-
-        public void AddParams(string key,object value)
+        public void AppendWhereOrAnd(string sqlString)
         {
-            _builder.Append($"{key}={value}");
+            WhereInfos.Add(WhereInfos.Any() ? (" AND " + sqlString):(" WHERE " + sqlString));
+        }
+        public void AppendSelect(string fieldName)
+        {
+            SelectInfos.Add(fieldName);
         }
         public override string ToString()
         {
-            return _builder.ToString();
+            return string.Format(SqlTemplate,SelectSql, TableName,WhereSql);
         }
     }
 }

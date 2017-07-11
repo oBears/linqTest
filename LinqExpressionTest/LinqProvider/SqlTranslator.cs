@@ -5,28 +5,25 @@ using System.Text;
 
 namespace LinqExpressionTest.LinqProvider
 {
-    public class SqlExpressionVisitor
+    /// <summary>
+    /// sql翻译器
+    /// </summary>
+    public class SqlTranslator
     {
         private SqlBuilder _sqlBuilder;
-        /// <summary>
-        /// 处理表达式，返回sql语句
-        /// </summary>
-        /// <param name="expression"></param>
-        /// <returns></returns>
-        public SqlBuilder ProcessExpression(Expression expression)
+        public SqlBuilder Translate(Expression expression)
         {
             _sqlBuilder=new SqlBuilder();
             VisitExpression(expression);
             return _sqlBuilder;
         }
-
         private void VisitExpression(Expression expression)
         {
             switch (expression.NodeType)
             {
                 case ExpressionType.AndAlso:
                     VisitAndAlso((BinaryExpression)expression);
-                    break;;
+                    break; ;
                 case ExpressionType.Equal:
                     VisitEqual((BinaryExpression)expression);
                     break;
@@ -45,8 +42,7 @@ namespace LinqExpressionTest.LinqProvider
                     VisitExpression(((LambdaExpression)expression).Body);
                     break;
                 default:
-                    break;;
-                    
+                    break; ;
             }
         }
         /// <summary>
@@ -92,10 +88,13 @@ namespace LinqExpressionTest.LinqProvider
         private void VisitEqual(BinaryExpression expression)
         {
             //节点类型是字段或属性
-            if (expression.Left.NodeType== ExpressionType.MemberAccess)
+            if (expression.Left.NodeType == ExpressionType.MemberAccess)
             {
-                _sqlBuilder.AddParams(((MemberExpression)expression.Left).Member.Name,((ConstantExpression)expression.Right).Value);
+                var sql =
+                    $"{((MemberExpression)expression.Left).Member.Name}={((ConstantExpression)expression.Right).Value}";
+                _sqlBuilder.AppendWhereOrAnd(sql);
             }
         }
+
     }
 }
