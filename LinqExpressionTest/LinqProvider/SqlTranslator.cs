@@ -10,12 +10,19 @@ namespace LinqExpressionTest.LinqProvider
     /// </summary>
     public class SqlTranslator
     {
-        private SqlBuilder _sqlBuilder;
-        public SqlBuilder Translate(Expression expression)
+        public  SqlBuilder SqlBuilder { get; }
+
+        public SqlTranslator()
         {
-            _sqlBuilder=new SqlBuilder();
+            SqlBuilder = new SqlBuilder();
+        }
+        public void Translate(List<Expression> expressions)
+        {
+            expressions.ForEach(Translate);
+        }
+        public void Translate(Expression expression)
+        {
             VisitExpression(expression);
-            return _sqlBuilder;
         }
         private void VisitExpression(Expression expression)
         {
@@ -92,7 +99,7 @@ namespace LinqExpressionTest.LinqProvider
             {
                 var sql =
                     $"{((MemberExpression)expression.Left).Member.Name}={((ConstantExpression)expression.Right).Value}";
-                _sqlBuilder.AppendWhereOrAnd(sql);
+                SqlBuilder.AppendWhereOrAnd(sql);
             }
         }
 
