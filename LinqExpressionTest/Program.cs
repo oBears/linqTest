@@ -15,8 +15,7 @@ namespace LinqExpressionTest
             var res = sqlQuery.Where(x => x.Gender == "男")
                 .Where(x => x.Id == 1)
                 .ToList();
-              
-            Console.WriteLine("Hello World!");
+            Console.Read();
         }
     }
 }
