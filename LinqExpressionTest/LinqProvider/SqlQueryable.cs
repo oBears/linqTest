@@ -29,7 +29,7 @@ namespace LinqExpressionTest.LinqProvider
 
         public List<T> ToList()
         {
-            var translate= new SqlTranslator();
+            var translate= new SqlTranslator<T>();
             translate.Translate(Expressions);
             var sql= translate.SqlBuilder.ToString();
             Console.WriteLine(sql);

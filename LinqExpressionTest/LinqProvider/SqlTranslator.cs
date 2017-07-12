@@ -8,13 +8,14 @@ namespace LinqExpressionTest.LinqProvider
     /// <summary>
     /// sql翻译器
     /// </summary>
-    public class SqlTranslator
+    public class SqlTranslator<T>
     {
         public  SqlBuilder SqlBuilder { get; }
 
         public SqlTranslator()
         {
             SqlBuilder = new SqlBuilder();
+            SqlBuilder.TableName = typeof(T).Name;
         }
         public void Translate(List<Expression> expressions)
         {
@@ -98,7 +99,7 @@ namespace LinqExpressionTest.LinqProvider
             if (expression.Left.NodeType == ExpressionType.MemberAccess)
             {
                 var sql =
-                    $"{((MemberExpression)expression.Left).Member.Name}={((ConstantExpression)expression.Right).Value}";
+                    $"{((MemberExpression)expression.Left).Member.Name}='{((ConstantExpression)expression.Right).Value}'";
                 SqlBuilder.AppendWhereOrAnd(sql);
             }
         }
