@@ -9,9 +9,8 @@ namespace LinqExpressionTest
     {
         static void Main(string[] args)
         {
-            var sqlQuery = new SqlQueryable<Student>();
-            var res = sqlQuery.Where(x => x.Gender == "男")
-                .Where(x => x.Id == 1)
+            var res = new SqlQueryable<Student>()
+                .Where(x => x.Gender == "男"&&x.Id==1)
                 .ToList();
             Console.Read();
         }

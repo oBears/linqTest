@@ -7,21 +7,21 @@ using System.Text;
 
 namespace LinqExpressionTest.LinqProvider
 {
-    public class SqlQueryable<T> : IQueryable<T> where T : class
+    public class SqlQueryable<T>
     {
-        private List<Expression> Expressions { set; get; }
+        private List<Expression> Expressions { get; }
 
         public SqlQueryable()
         {
             Expressions=new List<Expression>();
         }
 
-        public IQueryable<T> Select(Expression<Func<T, object>> expression)
+        public SqlQueryable<T> Select(Expression<Func<T, object>> expression)
         {
             Expressions.Add(expression);
             return this;
         }
-        public IQueryable<T> Where(Expression<Func<T, bool>> expression)
+        public SqlQueryable<T> Where(Expression<Func<T, bool>> expression)
         {
             Expressions.Add(expression);
             return this;
