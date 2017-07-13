@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 
 namespace LinqExpressionTest.LinqProvider
@@ -48,6 +50,9 @@ namespace LinqExpressionTest.LinqProvider
                     break;
                 case ExpressionType.Lambda:
                     VisitExpression(((LambdaExpression)expression).Body);
+                    break;
+                case ExpressionType.New:
+                    VisitNew((NewExpression) expression);
                     break;
                 default:
                     break; ;
@@ -101,6 +106,17 @@ namespace LinqExpressionTest.LinqProvider
                 var sql =
                     $"{((MemberExpression)expression.Left).Member.Name}='{((ConstantExpression)expression.Right).Value}'";
                 SqlBuilder.AppendWhereOrAnd(sql);
+            }
+        }
+
+        private void VisitNew(NewExpression expression)
+        {
+            if (expression.Members.Count>0)
+            {
+                foreach (var member in expression.Members)
+                {
+                    SqlBuilder.AppendSelect(member.Name);
+                }
             }
         }
 
